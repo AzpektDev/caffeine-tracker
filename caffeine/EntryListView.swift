@@ -53,7 +53,7 @@ struct EntryListView: View {
 
             }
             .background(background)
-            .navigationTitle("☕️ Caffeine Log")
+            .navigationTitle("Home")
             .navigationDestination(isPresented: $isShowingAddEntry) {
                 AddEntryView(entries: $entries)
             }
