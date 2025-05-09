@@ -91,7 +91,7 @@ struct CaffeineCalculator: View {
                                     .foregroundColor(.primary)
                             }
                         }
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal)
                     }
 //                    .padding()
                     .background(Color.white)
