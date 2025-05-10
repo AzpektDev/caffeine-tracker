@@ -76,7 +76,7 @@ struct SettingsView: View {
                     Link(destination: URL(string: "https://github.com/AzpektDev/caffeine-tracker")!) {
                         Label("Source Code", systemImage: "doc.text.magnifyingglass")
                     }
-                    LabeledContent("Version", value: "1.0")
+                    LabeledContent("Version", value: "1.0.0b")
                 }
                 
                 
