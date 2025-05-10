@@ -8,16 +8,24 @@ private func timeToday(hour: Int, minute: Int) -> Date {
     return Calendar.current.date(from: comps) ?? Date()
 }
 
-// for sample data
-private func makeDate(
-    _ y: Int, _ m: Int, _ d: Int,
-    _ hh: Int, _ mm: Int, _ ss: Int
+/// helper for sample data
+private func startOfDay(offsetDays: Int) -> Date {
+    let cal = Calendar.current
+    let today = cal.startOfDay(for: Date())
+    return cal.date(byAdding: .day, value: -offsetDays, to: today)!
+}
+
+/// helper for sample data
+private func makeRelativeDate(
+    offsetDays: Int,
+    hour: Int, minute: Int, second: Int
 ) -> Date {
-    var comps = DateComponents()
-    comps.year   = y; comps.month = m; comps.day = d
-    comps.hour   = hh; comps.minute = mm; comps.second = ss
+    var comps = Calendar.current.dateComponents([.year, .month, .day], from: startOfDay(offsetDays: offsetDays))
+    comps.hour   = hour
+    comps.minute = minute
+    comps.second = second
     comps.calendar = Calendar.current
-    return comps.date ?? Date()
+    return comps.date!
 }
 
 struct SettingsView: View {
@@ -91,44 +99,30 @@ struct SettingsView: View {
     }
     
     // MARK: - SAMPLE DATA LOADING
-        private func addSampleData() {
-            var entries = (try? JSONDecoder().decode([CaffeineEntry].self, from: rawData)) ?? []
+    private func addSampleData() {
+        var entries = (try? JSONDecoder().decode([CaffeineEntry].self, from: rawData)) ?? []
 
-            let samples: [(Date, Int)] = [
-                (makeDate(2025, 5, 27, 12, 23, 49), 150),
-                (makeDate(2025, 5, 27, 16, 54, 12), 200),
+        let template: [(Int, [(Int, Int, Int, Int)])] = [
+            (6, [( 6,12,35,150), (10,49,49,200)]),
+            (5, [( 8,21,17,200), (14,28,19,150), (16,19,25,200)]),
+            (4, [(12,13,14,100), (15,19,18,150)]),
+            (3, [( 7,23,19,100), ( 9,45,38,150), (10,46,59,200), (14,39,49,150)]),
+            (2, [( 7,23,18,150), (13,33,23,150)]),
+            (1, [( 8,53,51,150), (12,34,54,200), (15,12,19,150)]),
+            (0, [(12,23,49,150), (16,54,12,200)]),
+        ]
 
-                (makeDate(2025, 5, 26,  8, 53, 51), 150),
-                (makeDate(2025, 5, 26, 12, 34, 54), 200),
-                (makeDate(2025, 5, 26, 15, 12, 19), 150),
-
-                (makeDate(2025, 5, 25,  7, 23, 18), 150),
-                (makeDate(2025, 5, 25, 13, 33, 23), 150),
-
-                (makeDate(2025, 5, 24,  7, 23, 19), 100),
-                (makeDate(2025, 5, 24,  9, 45, 38), 150),
-                (makeDate(2025, 5, 24, 10, 46, 59), 200),
-                (makeDate(2025, 5, 24, 14, 39, 49), 150),
-
-                (makeDate(2025, 5, 23, 12, 13, 14), 100),
-                (makeDate(2025, 5, 23, 15, 19, 18), 150),
-
-                (makeDate(2025, 5, 22,  8, 21, 17), 200),
-                (makeDate(2025, 5, 22, 14, 28, 19), 150),
-                (makeDate(2025, 5, 22, 16, 19, 25), 200),
-
-                (makeDate(2025, 5, 21,  6, 12, 35), 150),
-                (makeDate(2025, 5, 22, 10, 49, 49), 200)
-            ]
-
-            for (date, mg) in samples {
+        for (offset, events) in template {
+            for (h, m, s, mg) in events {
+                let date = makeRelativeDate(offsetDays: offset, hour: h, minute: m, second: s)
                 entries.append(CaffeineEntry(amount: mg, date: date))
             }
-
-            if let encoded = try? JSONEncoder().encode(entries) {
-                rawData = encoded
-            }
         }
+
+        if let encoded = try? JSONEncoder().encode(entries) {
+            rawData = encoded
+        }
+    }
 }
 
 #Preview {
