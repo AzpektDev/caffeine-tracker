@@ -10,10 +10,10 @@ struct AddEntryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("PURE ORAL DOSE")
-                    .font(.caption)
-                    .padding(.horizontal)
-                    .foregroundColor(.gray)
+//                Text("Pure oral dose (mg)")
+//                    .font(.caption)
+//                    .padding(.horizontal)
+//                    .foregroundColor(.gray)
 
                 VStack(alignment: .leading, spacing: 10) {
                     CaffeineDoseBar()
@@ -40,23 +40,26 @@ struct AddEntryView: View {
                 CaffeineCalculator(inputMg: $inputMg)
                     .padding(.horizontal)
 
-                // Time Picker Section
+        
                 DisclosureGroup(isExpanded: $showTimePicker) {
-                    DatePicker("Ingestion Time", selection: $selectedDate, displayedComponents: .hourAndMinute)
+                    DatePicker("Ingestion time", selection: $selectedDate, displayedComponents: .hourAndMinute)
                         .datePickerStyle(WheelDatePickerStyle())
                         .labelsHidden()
                         .padding(.top, 10)
                 } label: {
-                    Label("Set Ingestion Time", systemImage: "clock")
+                    Label("Set ingestion Time", systemImage: "clock")
                         .font(.headline)
                         .foregroundColor(.blue)
                         .padding(.vertical, 5)
                 }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
                 .padding(.horizontal)
 
-                // Improved Add Button
                 Button(action: addEntry) {
-                    Text("Add Entry")
+                    Text("Add entry")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -69,7 +72,7 @@ struct AddEntryView: View {
             }
             .padding(.top)
         }
-        .navigationTitle("Add Entry")
+        .navigationTitle("Add entry")
         .background(Color(.systemGroupedBackground))
     }
 
