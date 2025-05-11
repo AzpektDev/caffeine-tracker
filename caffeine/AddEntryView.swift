@@ -4,6 +4,8 @@ struct AddEntryView: View {
     @Binding var entries: [CaffeineEntry]
     @Environment(\.dismiss) var dismiss
     @State private var inputMg: String = ""
+    @State private var showTimePicker = false
+    @State private var selectedDate = Date()
 
     var body: some View {
         ScrollView {
@@ -38,12 +40,32 @@ struct AddEntryView: View {
                 CaffeineCalculator(inputMg: $inputMg)
                     .padding(.horizontal)
 
-                Button("Add") {
-                    addEntry()
+                // Time Picker Section
+                DisclosureGroup(isExpanded: $showTimePicker) {
+                    DatePicker("Ingestion Time", selection: $selectedDate, displayedComponents: .hourAndMinute)
+                        .datePickerStyle(WheelDatePickerStyle())
+                        .labelsHidden()
+                        .padding(.top, 10)
+                } label: {
+                    Label("Set Ingestion Time", systemImage: "clock")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                        .padding(.vertical, 5)
                 }
-                .buttonStyle(.borderedProminent)
-                .frame(maxWidth: .infinity)
                 .padding(.horizontal)
+
+                // Improved Add Button
+                Button(action: addEntry) {
+                    Text("Add Entry")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
             }
             .padding(.top)
         }
@@ -53,7 +75,7 @@ struct AddEntryView: View {
 
     private func addEntry() {
         guard let mg = Int(inputMg), mg > 0 else { return }
-        let newEntry = CaffeineEntry(amount: mg, date: Date())
+        let newEntry = CaffeineEntry(amount: mg, date: selectedDate)
         entries.append(newEntry)
         dismiss()
     }
