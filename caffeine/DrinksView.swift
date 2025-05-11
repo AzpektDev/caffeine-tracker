@@ -1,7 +1,6 @@
 import SwiftUI
 import Combine
 
-// MARK: - Model
 struct Drink: Identifiable, Decodable, Hashable {
     let name: String
     let brief: String
@@ -9,11 +8,10 @@ struct Drink: Identifiable, Decodable, Hashable {
     let type_of_caffeine: String
     let caffeine_mg_per_100ml: Int
 
-    // Use name as a stable identifier (API does not provide one)
+    // use name as a reliable id
     var id: String { name }
 }
 
-// MARK: - View‑Model
 @MainActor
 final class DrinksViewModel: ObservableObject {
     @Published var query: String = ""
@@ -25,7 +23,7 @@ final class DrinksViewModel: ObservableObject {
     private var fetchTask: Task<Void, Never>?
 
     init() {
-        // Debounce the query so we are not spamming the API
+        // debounce to not spam the api
         searchCancellable = $query
             .removeDuplicates()
             .debounce(for: .milliseconds(250), scheduler: RunLoop.main)
@@ -33,7 +31,6 @@ final class DrinksViewModel: ObservableObject {
                 self?.performSearch()
             }
 
-        // Initial load of 25 popular drinks
         performSearch()
     }
 
@@ -52,7 +49,7 @@ final class DrinksViewModel: ObservableObject {
     }
 
     private func fetch(from url: URL) {
-        // Cancel any in‑flight request to avoid race conditions
+        // cancel to avoid race conditions
         fetchTask?.cancel()
         fetchTask = Task {
             isLoading = true
@@ -71,19 +68,16 @@ final class DrinksViewModel: ObservableObject {
     }
 }
 
-// MARK: - View
 struct DrinksView: View {
     @StateObject private var vm = DrinksViewModel()
 
     var body: some View {
         NavigationStack {
             List {
-                // Loading indicator at the top
                 if vm.isLoading && vm.drinks.isEmpty {
                     ProgressView().frame(maxWidth: .infinity, alignment: .center)
                 }
 
-                // Drink rows
                 ForEach(vm.drinks) { drink in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
@@ -99,7 +93,6 @@ struct DrinksView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
 
-                        // Type badge
                         Text(drink.type_of_caffeine)
                             .font(.caption.weight(.semibold))
                             .padding(.horizontal, 8)
@@ -124,7 +117,6 @@ struct DrinksView: View {
         }
     }
 
-    // MARK: - Helpers
     private func badgeBackground(for drink: Drink) -> Color {
         drink.type_of_caffeine.localizedCaseInsensitiveContains("Synthetic") ? Color.red.opacity(0.2) : Color.gray.opacity(0.2)
     }
@@ -134,7 +126,6 @@ struct DrinksView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
     DrinksView()
 }
