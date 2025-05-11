@@ -16,12 +16,16 @@ struct ContentView: View {
                     Label("Home", systemImage: "house")
                 }
                 .tag(1)
-
+            DrinksView()
+                .tabItem {
+                    Label("Drinks", systemImage: "cup.and.saucer.fill")
+                }
+                .tag(2)
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
-                .tag(2)
+                .tag(3)
         }
     }
 }
